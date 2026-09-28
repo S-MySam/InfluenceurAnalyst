@@ -19,6 +19,9 @@ async function newsApiFetch(query, env) {
   const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=popularity&language=en&pageSize=5&apiKey=${env.NEWS_API_KEY}`;
   const res = await fetch(url);
   const data = await res.json();
+  if (data.status === 'error') {
+    throw new Error(`NewsAPI error: ${data.code} - ${data.message}`);
+  }
   return data.articles || [];
 }
 
