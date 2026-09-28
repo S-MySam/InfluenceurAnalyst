@@ -129,7 +129,7 @@ app.get('/api/recommendations', (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`✅ Backend running on ${PORT}`);
   console.log(`Groq: ${process.env.GROQ_API_KEY ? '✓' : '✗'}`);
