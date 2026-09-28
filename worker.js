@@ -57,18 +57,6 @@ export default {
       return json({ status: 'ok', groq: !!env.GROQ_API_KEY });
     }
 
-    if (path === '/debug-models') {
-      try {
-        const res = await fetch('https://api.groq.com/openai/v1/models', {
-          headers: { 'Authorization': `Bearer ${env.GROQ_API_KEY}` }
-        });
-        const data = await res.json();
-        return json(data);
-      } catch (err) {
-        return json({ error: err.message }, 500);
-      }
-    }
-
     if (path === '/api/trending-topics') {
       try {
         const prompt = `You are a LinkedIn content strategist for the HR/recruitment/talent acquisition space. List 5 currently important trending topics LinkedIn creators in HR should post about right now (September 2026). For each, give: name (short), a realistic mentions count (1000-5000), a realistic posts count (5000-20000), and a trend arrow (📈 or ➡️ or 📉). Return ONLY a JSON array, no prose, format: [{"name":"...","mentions":2450,"posts":12450,"trend":"📈"}]`;

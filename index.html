@@ -434,26 +434,33 @@
 
         let html = `
           <button class="back-btn" onclick="selectedTopic = null; loadTrends();">← Back to Trends</button>
-          <h3 style="margin-bottom: 1rem; color: var(--text-dark);">Articles & Posts on "${topic}"</h3>
+          <h3 style="margin-bottom: 1rem; color: var(--text-dark);">Analyse: "${topic}"</h3>
+          <div class="article-card">
+            <div class="article-content">
+              <div class="article-description" style="font-size: 1rem; line-height: 1.6;">${data.analysis || ''}</div>
+            </div>
+          </div>
+          <h4 style="margin: 1.5rem 0 1rem; color: var(--text-dark);">Idées de posts</h4>
         `;
 
-        (data.articles || []).forEach(article => {
-          const imageUrl = article.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%226366f1%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E' + encodeURIComponent(topic.split(' ')[0]) + '%3C/text%3E%3C/svg%3E';
-          
+        (data.post_ideas || []).forEach(idea => {
           html += `
             <div class="article-card">
-              <div class="article-image">
-                <img src="${imageUrl}" alt="${article.title}" onerror="this.style.display='none'">
+              <div class="article-content">
+                <div class="article-title">💡 ${idea}</div>
               </div>
+            </div>
+          `;
+        });
+
+        html += `<h4 style="margin: 1.5rem 0 1rem; color: var(--text-dark);">Recherche en direct</h4>`;
+        (data.articles || []).forEach(article => {
+          html += `
+            <div class="article-card">
               <div class="article-content">
                 <div class="article-source">${article.source}</div>
                 <div class="article-title">${article.title}</div>
-                <div class="article-description">${article.description || 'Read more to learn about this topic'}</div>
-                <div class="article-footer">
-                  <span class="engagement-badge">👍 ${article.engagement_estimate?.toLocaleString() || 'N/A'}</span>
-                  <span>Score: ${article.relevance_score || 'N/A'}</span>
-                </div>
-                <a href="${article.url}" target="_blank" class="article-link">Read Article →</a>
+                <a href="${article.url}" target="_blank" class="article-link">Ouvrir →</a>
               </div>
             </div>
           `;
@@ -509,7 +516,7 @@
                   </div>
                 </div>
                 <div style="font-size: 0.9rem; color: var(--text-light);">
-                  <span>👍 ${post.estimated_likes} likes • 💬 ${post.estimated_comments} comments • ↗️ ${post.estimated_shares} shares</span>
+                  <span>👍 ${post.estimated_likes} likes estimés • 💡 ${post.feedback || ''}</span>
                 </div>
               </div>
             </div>
