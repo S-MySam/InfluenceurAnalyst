@@ -2,10 +2,10 @@
   "name": "creator-intelligence-center",
   "version": "1.0.0",
   "description": "Unified dashboard for creator screening, competitor benchmarking, and LinkedIn insights",
-  "main": "backend.js",
+  "main": "backend-v2.js",
   "scripts": {
-    "start": "node backend.js",
-    "dev": "node backend.js"
+    "start": "node backend-v2.js",
+    "dev": "node backend-v2.js"
   },
   "keywords": [
     "creator",
