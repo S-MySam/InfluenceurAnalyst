@@ -1,15 +1,12 @@
 {
   "name": "creator-intelligence-center",
   "version": "1.0.0",
-  "main": "backend-simple.js",
+  "main": "backend-v2.js",
   "scripts": {
-    "start": "node backend-simple.js"
+    "start": "node backend-v2.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5"
-  },
-  "engines": {
-    "node": "18.x"
   }
 }
