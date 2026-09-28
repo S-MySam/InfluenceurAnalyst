@@ -1,12 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
+const Groq = require('groq-sdk');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
-app.get('/api/trending-topics', (req, res) => res.json({ trending: [{ name: 'AI', mentions: 2450, posts: 12450, trend: '📈' }] }));
-app.get('/api/trend/:topic', (req, res) => res.json({ topic: req.params.topic, articles: [] }));
-app.post('/api/analyze-posts', (req, res) => res.json({ posts: [] }));
-app.post('/api/competitor-analysis', (req, res) => res.json({ competitors: [] }));
-app.get('/api/recommendations', (req, res) => res.json({ recommendations: [] }));
-app.listen(process.env.PORT || 3000, () => console.log('✅ Server running'));
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const NEWS_API_KEY = process.env.NEWS_API_KEY;
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', groq:
