@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node backend-v2.js"
   },
+  
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
