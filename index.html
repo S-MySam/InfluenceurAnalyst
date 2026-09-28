@@ -553,21 +553,6 @@
         const data = await res.json();
 
         let html = '<h3 style="margin-bottom: 1.5rem; margin-top: 1.5rem;">Competitor Benchmark</h3>';
-        
-        html += `
-          <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 10px; margin-bottom: 1.5rem;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <div>
-                <strong style="display: block; color: var(--primary); font-size: 1.3rem;">${data.benchmark.avg_engagement_across}</strong>
-                <small>Avg Engagement</small>
-              </div>
-              <div>
-                <strong style="display: block; color: var(--primary); font-size: 1.3rem;">9:00-16:30</strong>
-                <small>Best Posting Times</small>
-              </div>
-            </div>
-          </div>
-        `;
 
         (data.competitors || []).forEach(comp => {
           html += `
@@ -576,9 +561,7 @@
                 <div class="article-title">${comp.name}</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; font-size: 0.9rem;">
                   <div><strong>Avg Eng:</strong> ${comp.avg_engagement}</div>
-                  <div><strong>Followers:</strong> ${comp.follower_estimate.toLocaleString()}</div>
-                  <div><strong>Posts/month:</strong> ${comp.post_frequency}</div>
-                  <div><strong>Viral Posts:</strong> ${comp.viral_posts_count}</div>
+                  <div><strong>Followers:</strong> ${(comp.followers || 0).toLocaleString()}</div>
                 </div>
               </div>
             </div>
