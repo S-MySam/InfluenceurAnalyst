@@ -64,6 +64,17 @@ export default {
       return json({ status: 'ok', groq: !!env.GROQ_API_KEY, news: !!env.NEWS_API_KEY });
     }
 
+    if (path === '/debug') {
+      try {
+        const url = `https://newsapi.org/v2/everything?q=technology&sortBy=popularity&language=en&pageSize=5&apiKey=${env.NEWS_API_KEY}`;
+        const res = await fetch(url, { headers: { 'User-Agent': 'CreatorIntelligence/1.0' } });
+        const data = await res.json();
+        return json({ httpStatus: res.status, raw: data, keyLength: env.NEWS_API_KEY?.length, keyStart: env.NEWS_API_KEY?.substring(0,6) });
+      } catch (err) {
+        return json({ debugError: err.message }, 500);
+      }
+    }
+
     if (path === '/api/trending-topics') {
       try {
         const articles = await newsApiFetch('LinkedIn HR recruitment AI', env);
