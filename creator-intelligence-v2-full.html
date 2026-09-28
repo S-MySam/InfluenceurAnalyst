@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creator Intelligence v2 - Real Data</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #f59e0b;
+      --bg-light: #f8fafc;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: var(--text-dark);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 1.5rem 1rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: white;
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 1rem;
+      border: none;
+      background: white;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 1rem;
+      max-width: 100%;
+      overflow-y: auto;
+    }
+
+    .tab-content {
+      display: none;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tab-content h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: white;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      margin-top: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-light);
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--text-light);
+      padding: 2rem;
+    }
+
+    .trend-card {
+      background: var(--bg-light);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-left: 5px solid var(--primary);
+    }
+
+    .trend-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+      transform: translateX(4px);
+    }
+
+    .trend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .trend-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .trend-emoji {
+      font-size: 1.5rem;
+    }
+
+    .trend-stats {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .article-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      transition: all 0.3s;
+    }
+
+    .article-card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .article-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1rem;
+      overflow: hidden;
+    }
+
+    .article-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .article-content {
+      padding: 1.25rem;
+    }
+
+    .article-source {
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .article-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-dark);
+      line-height: 1.4;
+    }
+
+    .article-description {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .article-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .engagement-badge {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .article-link {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 0.75rem;
+      transition: all 0.2s;
+    }
+
+    .article-link:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .back-btn {
+      background: white;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-light);
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .header h1 {
+        font-size: 1.3rem;
+      }
+
+      .trend-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>📊 Creator Intelligence</h1>
+      <p>Real Data • LinkedIn Focus • Trends & Deep Dive</p>
+    </header>
+
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('trends')">📈 Trending Now</button>
+      <button class="tab-btn" onclick="switchTab('posts')">🔗 Post Analyzer</button>
+      <button class="tab-btn" onclick="switchTab('competitor')">⚔️ Competitor Analysis</button>
+      <button class="tab-btn" onclick="switchTab('recommendations')">🎯 Recommendations</button>
+    </nav>
+
+    <main class="main-content">
+      <!-- TAB 1: TRENDS WITH DRILL-DOWN -->
+      <div id="trends" class="tab-content active">
+        <h2>📈 Trending Topics (Click to see posts)</h2>
+        <div id="trends-container"></div>
+      </div>
+
+      <!-- TAB 2: POST ANALYZER -->
+      <div id="posts" class="tab-content">
+        <h2>🔗 Analyze Your LinkedIn Posts</h2>
+        <textarea id="posts-input" placeholder="Paste your LinkedIn post content&#10;(simulate analysis on your content)&#10;&#10;Ex: &quot;Just launched our new AI platform that helps HR teams...&quot;" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; min-height: 120px; resize: vertical; margin-bottom: 1rem;"></textarea>
+        <button class="btn" onclick="analyzePosts()">🔍 Analyze Post</button>
+        <div id="posts-results"></div>
+      </div>
+
+      <!-- TAB 3: COMPETITOR ANALYSIS -->
+      <div id="competitor" class="tab-content">
+        <h2>⚔️ Competitor Analysis</h2>
+        <textarea id="competitor-input" placeholder="Enter competitor company names (one per line)&#10;Ex: Workday&#10;SAP SuccessFactors&#10;Rippling" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; min-height: 100px; resize: vertical; margin-bottom: 1rem;"></textarea>
+        <button class="btn" onclick="analyzeCompetitors()">🔍 Analyze Competitors</button>
+        <div id="competitor-results"></div>
+      </div>
+
+      <!-- TAB 4: RECOMMENDATIONS -->
+      <div id="recommendations" class="tab-content">
+        <h2>🎯 Your Next Content Moves</h2>
+        <button class="btn" onclick="loadRecommendations()">📋 Get Recommendations</button>
+        <div id="recommendations-results"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ============== CONFIG ==============
+    // Change this to your backend URL (currently localhost for testing)
+    const API_URL = 'http://localhost:3000';
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+
+      // Auto-load trends on first view
+      if (tabName === 'trends') {
+        loadTrends();
+      }
+    }
+
+    // ============== TRENDS WITH DRILL-DOWN ==============
+
+    let selectedTopic = null;
+    let trendsList = [];
+
+    async function loadTrends() {
+      const container = document.getElementById('trends-container');
+      
+      if (selectedTopic) {
+        // Show articles for selected trend
+        await loadTrendArticles(selectedTopic);
+        return;
+      }
+
+      container.innerHTML = '<div class="loading">⏳ Loading trending topics...</div>';
+
+      try {
+        const res = await fetch(`${API_URL}/api/trending-topics`);
+        const data = await res.json();
+        trendsList = data.trending || [];
+
+        let html = '';
+        trendsList.forEach((trend, idx) => {
+          html += `
+            <div class="trend-card" onclick="selectTopic('${trend.name}')">
+              <div class="trend-header">
+                <div class="trend-title">${trend.name}</div>
+                <div class="trend-emoji">${trend.trend}</div>
+              </div>
+              <div class="trend-stats">
+                <span>💬 ${trend.mentions.toLocaleString()} mentions</span>
+                <span>📝 ${trend.posts.toLocaleString()} posts</span>
+              </div>
+              <div style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--primary);">
+                Click to see what worked →
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div class="error">Error loading trends: ${err.message}</div>`;
+      }
+    }
+
+    async function selectTopic(topic) {
+      selectedTopic = topic;
+      loadTrends(); // Reload view to show articles
+    }
+
+    async function loadTrendArticles(topic) {
+      const container = document.getElementById('trends-container');
+      container.innerHTML = '<div class="loading">⏳ Loading articles on "' + topic + '"...</div>';
+
+      try {
+        const res = await fetch(`${API_URL}/api/trend/${encodeURIComponent(topic)}`);
+        const data = await res.json();
+
+        let html = `
+          <button class="back-btn" onclick="selectedTopic = null; loadTrends();">← Back to Trends</button>
+          <h3 style="margin-bottom: 1rem; color: var(--text-dark);">Articles & Posts on "${topic}"</h3>
+        `;
+
+        (data.articles || []).forEach(article => {
+          const imageUrl = article.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%226366f1%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E' + encodeURIComponent(topic.split(' ')[0]) + '%3C/text%3E%3C/svg%3E';
+          
+          html += `
+            <div class="article-card">
+              <div class="article-image">
+                <img src="${imageUrl}" alt="${article.title}" onerror="this.style.display='none'">
+              </div>
+              <div class="article-content">
+                <div class="article-source">${article.source}</div>
+                <div class="article-title">${article.title}</div>
+                <div class="article-description">${article.description || 'Read more to learn about this topic'}</div>
+                <div class="article-footer">
+                  <span class="engagement-badge">👍 ${article.engagement_estimate?.toLocaleString() || 'N/A'}</span>
+                  <span>Score: ${article.relevance_score || 'N/A'}</span>
+                </div>
+                <a href="${article.url}" target="_blank" class="article-link">Read Article →</a>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `
+          <button class="back-btn" onclick="selectedTopic = null; loadTrends();">← Back to Trends</button>
+          <div class="error">Error loading articles: ${err.message}</div>
+        `;
+      }
+    }
+
+    // ============== POST ANALYZER ==============
+
+    async function analyzePosts() {
+      const input = document.getElementById('posts-input').value;
+      const posts = input.split('\n').filter(p => p.trim()).slice(0, 3);
+      const results = document.getElementById('posts-results');
+
+      if (!posts.length) {
+        results.innerHTML = '<div class="error">Please enter at least one post</div>';
+        return;
+      }
+
+      results.innerHTML = '<div class="loading">⏳ Analyzing...</div>';
+
+      try {
+        const res = await fetch(`${API_URL}/api/analyze-posts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ posts })
+        });
+
+        const data = await res.json();
+
+        let html = '<h3 style="margin-bottom: 1.5rem; margin-top: 1.5rem;">Post Analysis</h3>';
+        (data.posts || []).forEach((post, idx) => {
+          html += `
+            <div class="article-card">
+              <div class="article-content">
+                <div class="article-title">Post ${idx + 1}</div>
+                <div class="article-description">"${post.content}"</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                  <div style="background: rgba(99, 102, 241, 0.05); padding: 0.75rem; border-radius: 6px;">
+                    <strong style="display: block; color: var(--primary);">${post.engagement_score}%</strong>
+                    <small>Engagement Score</small>
+                  </div>
+                  <div style="background: rgba(99, 102, 241, 0.05); padding: 0.75rem; border-radius: 6px;">
+                    <strong style="display: block; color: var(--primary);">${post.estimated_reach.toLocaleString()}</strong>
+                    <small>Est. Reach</small>
+                  </div>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-light);">
+                  <span>👍 ${post.estimated_likes} likes • 💬 ${post.estimated_comments} comments • ↗️ ${post.estimated_shares} shares</span>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        results.innerHTML = html;
+      } catch (err) {
+        results.innerHTML = `<div class="error">Error: ${err.message}</div>`;
+      }
+    }
+
+    // ============== COMPETITOR ANALYSIS ==============
+
+    async function analyzeCompetitors() {
+      const input = document.getElementById('competitor-input').value;
+      const companies = input.split('\n').filter(c => c.trim());
+      const results = document.getElementById('competitor-results');
+
+      if (!companies.length) {
+        results.innerHTML = '<div class="error">Please enter at least one company</div>';
+        return;
+      }
+
+      results.innerHTML = '<div class="loading">⏳ Analyzing...</div>';
+
+      try {
+        const res = await fetch(`${API_URL}/api/competitor-analysis`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ companies, industry: 'HR Tech' })
+        });
+
+        const data = await res.json();
+
+        let html = '<h3 style="margin-bottom: 1.5rem; margin-top: 1.5rem;">Competitor Benchmark</h3>';
+        
+        html += `
+          <div style="background: var(--bg-light); padding: 1.25rem; border-radius: 10px; margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <strong style="display: block; color: var(--primary); font-size: 1.3rem;">${data.benchmark.avg_engagement_across}</strong>
+                <small>Avg Engagement</small>
+              </div>
+              <div>
+                <strong style="display: block; color: var(--primary); font-size: 1.3rem;">9:00-16:30</strong>
+                <small>Best Posting Times</small>
+              </div>
+            </div>
+          </div>
+        `;
+
+        (data.competitors || []).forEach(comp => {
+          html += `
+            <div class="article-card">
+              <div class="article-content">
+                <div class="article-title">${comp.name}</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                  <div><strong>Avg Eng:</strong> ${comp.avg_engagement}</div>
+                  <div><strong>Followers:</strong> ${comp.follower_estimate.toLocaleString()}</div>
+                  <div><strong>Posts/month:</strong> ${comp.post_frequency}</div>
+                  <div><strong>Viral Posts:</strong> ${comp.viral_posts_count}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        results.innerHTML = html;
+      } catch (err) {
+        results.innerHTML = `<div class="error">Error: ${err.message}</div>`;
+      }
+    }
+
+    // ============== RECOMMENDATIONS ==============
+
+    async function loadRecommendations() {
+      const results = document.getElementById('recommendations-results');
+      results.innerHTML = '<div class="loading">⏳ Loading recommendations...</div>';
+
+      try {
+        const res = await fetch(`${API_URL}/api/recommendations`);
+        const data = await res.json();
+
+        let html = '<h3 style="margin-bottom: 1.5rem; margin-top: 1.5rem;">Prioritized Content Ideas</h3>';
+
+        (data.recommendations || []).forEach((rec, idx) => {
+          html += `
+            <div class="article-card">
+              <div class="article-content">
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+                  <div style="background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">#${rec.priority}</div>
+                  <div style="flex: 1;">
+                    <div class="article-title">${rec.title}</div>
+                    <div class="article-description">${rec.reason}</div>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem; background: var(--bg-light); padding: 1rem; border-radius: 6px;">
+                  <div>
+                    <strong>Reach:</strong><br>${rec.expected_reach}
+                  </div>
+                  <div>
+                    <strong>Format:</strong><br>${rec.content_type}
+                  </div>
+                  <div>
+                    <strong>Time:</strong><br>${rec.time_to_create}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        results.innerHTML = html;
+      } catch (err) {
+        results.innerHTML = `<div class="error">Error: ${err.message}</div>`;
+      }
+    }
+
+    // Auto-load trends on page load
+    window.addEventListener('load', loadTrends);
+  </script>
+</body>
+</html>
